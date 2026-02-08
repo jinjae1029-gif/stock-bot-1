@@ -3,11 +3,14 @@ import { SOXL_DATA, QQQ_DATA } from './data.js';
 import { runDeepMind, runRobustnessTest, runSensitivityTest, calculateSQN } from './deep_mind.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { firebaseConfig } from './firebase_config.js';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+signInAnonymously(auth).then(() => console.log("Firebase: Signed in anonymously")).catch((error) => console.error("Firebase Auth Error:", error));
 
 // --- FIREBASE HELPERS ---
 // --- FIREBASE HELPERS ---
@@ -349,9 +352,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isTradingSheet) {
                     // -> TRADING SHEET MODE
                     // 1. Show "Use" button, Hide "Warehouse/Saved" toggles
-                    btnUseDefaults.classList.remove('hidden');
-                    if (toggleWarehouse) toggleWarehouse.parentElement.style.display = 'none';
-                    if (toggleSaved) toggleSaved.parentElement.style.display = 'none';
+                    if (btnUseDefaults) {
+                        btnUseDefaults.classList.remove('hidden');
+                        btnUseDefaults.style.display = 'block'; // Force display
+                    }
+                    if (toggleWarehouse && toggleWarehouse.parentElement) toggleWarehouse.parentElement.style.display = 'none';
+                    if (toggleSaved && toggleSaved.parentElement) toggleSaved.parentElement.style.display = 'none';
                     if (savedStratWrapper) savedStratWrapper.style.display = 'none';
 
                     // 2. Button Visibility Logic
@@ -367,6 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // 4. Trigger Seed Logic (if not set?) or just Date Logic?
                     setTradingSheetDates();
+
 
                     if (defaults) {
                         try {
@@ -429,21 +436,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
                     // -> BACKTESTER MODE
-                    // 1. Restore UI
-                    btnUseDefaults.classList.add('hidden');
-
-                    // Only show Warehouse/Saved toggles if they exist
-                    if (toggleWarehouse) toggleWarehouse.parentElement.style.display = '';
-                    if (toggleSaved) toggleSaved.parentElement.style.display = '';
-
-                    // Only Show Saved Wrapper IF Checkbox is Checked
-                    if (savedStratWrapper) {
-                        savedStratWrapper.style.display = toggleSaved.checked ? 'block' : 'none';
-                        if (!toggleSaved.checked) savedStratWrapper.classList.add('hidden');
-                        else savedStratWrapper.classList.remove('hidden');
+                    // Hide "Use" button, Show "Warehouse/Saved"
+                    if (btnUseDefaults) {
+                        btnUseDefaults.classList.add('hidden');
+                        btnUseDefaults.style.display = 'none'; // Force hide
                     }
+                    if (toggleWarehouse && toggleWarehouse.parentElement) toggleWarehouse.parentElement.style.display = 'flex'; // Or original display
+                    if (toggleSaved && toggleSaved.parentElement) toggleSaved.parentElement.style.display = 'flex';
+                    if (savedStratWrapper) savedStratWrapper.style.display = 'block';
 
-                    // 2. Hide "Seed/Cash Change" Buttons
+                    // Hide Injection Buttons
                     if (document.getElementById('btnInjSeed')) document.getElementById('btnInjSeed').classList.add('hidden');
                     if (document.getElementById('btnInjCash')) document.getElementById('btnInjCash').classList.add('hidden');
 
@@ -722,7 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tgToken) localStorage.setItem('tgToken', tgToken);
             if (tgChatId) localStorage.setItem('tgChatId', tgChatId);
 
-            alert("현재 설정(시드, 텔레그램, 날짜 포함)이 '기본값'으로 저장되었습니다.\n(클라우드 동기화 완료 ☁️)");
+            // alert("현재 설정(시드, 텔레그램, 날짜 포함)이 '기본값'으로 저장되었습니다.\n(클라우드 동기화 완료 ☁️)");
 
             // Also run?
             runBacktest();
