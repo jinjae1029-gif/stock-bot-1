@@ -15,7 +15,7 @@ git push origin main
 echo [Bot 3] Deploying...
 cd "..\backtest-app - 3"
 git add .
-git commit -m "Fix: Extreme Force Button Visibility (setProperty important)"
+git commit -m "Fix: Safety Check for forceShowButton to Prevent Crash"
 git push origin main
 
 echo [Bot 4] Deploying...
