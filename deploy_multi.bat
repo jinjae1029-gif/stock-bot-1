@@ -15,7 +15,7 @@ git push origin main
 echo [Bot 3] Deploying...
 cd "..\backtest-app - 3"
 git add .
-git commit -m "Debug: Disable Force Show Logic to fix crash"
+git commit -m "Fix: Remove Force Show Logic entirely to restore functionality"
 git push origin main
 
 echo [Bot 4] Deploying...
