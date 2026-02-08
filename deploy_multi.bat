@@ -15,7 +15,7 @@ git push origin main
 echo [Bot 3] Deploying...
 cd "..\backtest-app - 3"
 git add .
-git commit -m "Fix: Ensure Button Visibility with Interval and Inline Styles"
+git commit -m "Fix: Extreme Force Button Visibility (setProperty important)"
 git push origin main
 
 echo [Bot 4] Deploying...
