@@ -15,7 +15,7 @@ git push origin main
 echo [Bot 3] Deploying...
 cd "..\backtest-app - 3"
 git add .
-git commit -m "Fix: Remove Force Show Logic entirely to restore functionality"
+git commit -m "Fix: Remove stray brace causing syntax error in app_v2.js"
 git push origin main
 
 echo [Bot 4] Deploying...
