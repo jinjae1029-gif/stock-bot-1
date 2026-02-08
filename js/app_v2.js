@@ -76,6 +76,7 @@ window.saveToCloud = async () => {
     try {
         await setDoc(doc(db, "users", uid), data);
         console.log(`Saved to Firestore: users/${uid}`);
+        if (btnUseDefaults) btnUseDefaults.innerHTML = "저장 완료! ✅";
     } catch (e) {
         console.error("Cloud Save Error:", e);
         // Only alert if it's NOT a permission error (or maybe just log it)
@@ -90,7 +91,12 @@ window.saveToCloud = async () => {
     } finally {
         if (btnUseDefaults) {
             btnUseDefaults.disabled = false;
-            btnUseDefaults.innerHTML = originalText;
+            // Reset to original text after a short delay if success, or immediately if fail
+            if (btnUseDefaults.innerHTML === "저장 완료! ✅") {
+                setTimeout(() => btnUseDefaults.innerHTML = originalText, 2000);
+            } else {
+                btnUseDefaults.innerHTML = originalText;
+            }
         }
     }
 };
