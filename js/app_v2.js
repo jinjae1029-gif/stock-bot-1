@@ -485,55 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // "Use" Button Handler
-        if (btnUseDefaults) {
-            btnUseDefaults.addEventListener('click', () => {
-                // Save current inputs as Defaults
-                // Also Save Current Seed as userSeed
-                const currentSeed = document.getElementById('initCapital').value;
-                if (currentSeed) localStorage.setItem('userSeed', currentSeed);
-
-                // 1. Gather inputs (Reuse helper or just read)
-                const getVal = (id) => parseFloat(document.getElementById(id).value);
-                const getWeights = (prefix) => {
-                    const container = document.getElementById(prefix === 'safe' ? 'safeWeights' : 'offWeights');
-                    if (!container) return [];
-                    const inputs = container.querySelectorAll('input');
-                    return Array.from(inputs).map(inp => parseFloat(inp.value) || 0);
-                };
-
-                const defaults = {
-                    safe: {
-                        buyLimit: getVal('safeBuyLimit'),
-                        target: getVal('safeTarget'),
-                        timeCut: getVal('safeTimeCut'),
-                        weights: getWeights('safe')
-                    },
-                    offensive: {
-                        buyLimit: getVal('offBuyLimit'),
-                        target: getVal('offTarget'),
-                        timeCut: getVal('offTimeCut'),
-                        weights: getWeights('off')
-                    },
-                    rebalance: {
-                        profitAdd: getVal('profitAdd'),
-                        lossSub: getVal('lossSub')
-                    }
-                };
-
-                localStorage.setItem('tradingSheetDefaults', JSON.stringify(defaults));
-
-                // Save Telegram Settings
-                localStorage.setItem('tgToken', document.getElementById('tgToken').value);
-                localStorage.setItem('tgChatId', document.getElementById('tgChatId').value);
-
-                alert("현재 설정(시드 포함)이 '매매 시트' 기본값으로 저장되었습니다.");
-
-                // Also run?
-                runBacktest();
-                saveToCloud(); // Save to Cloud
-            });
-        }
+        // "Use" Button Handler (Legacy removed, using shared saveDefaults below)
 
         // --- INJECTION LOGIC ---
         const btnInjSeed = document.getElementById('btnInjSeed');
@@ -791,7 +743,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentSeed = document.getElementById('initCapital').value;
             if (currentSeed) localStorage.setItem('userSeed', currentSeed);
 
-            alert("현재 설정(시드 포함, 시작일 포함)이 '기본값'으로 저장되었습니다.\n(클라우드 동기화 완료 ☁️)");
+            // [NEW] Save Telegram Settings as well
+            const tgToken = document.getElementById('tgToken') ? document.getElementById('tgToken').value : "";
+            const tgChatId = document.getElementById('tgChatId') ? document.getElementById('tgChatId').value : "";
+            if (tgToken) localStorage.setItem('tgToken', tgToken);
+            if (tgChatId) localStorage.setItem('tgChatId', tgChatId);
+
+            alert("현재 설정(시드, 텔레그램, 날짜 포함)이 '기본값'으로 저장되었습니다.\n(클라우드 동기화 완료 ☁️)");
 
             // Also run?
             runBacktest();
@@ -799,6 +757,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Trigger Cloud Save
             if (window.saveToCloud) window.saveToCloud();
         };
+
+        // "Use" Button Handler
+        if (btnUseDefaults) {
+            btnUseDefaults.addEventListener('click', saveDefaults);
+        }
 
 
         // "Use" Button Handler (PC) - Ensure only ONE listener executes this logic
