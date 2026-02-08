@@ -15,7 +15,7 @@ git push origin main
 echo [Bot 3] Deploying...
 cd "..\backtest-app - 3"
 git add .
-git commit -m "Fix: Align Daily Bot EndDate with Web App Logic"
+git commit -m "Fix: Align Start Date logic & Add Debug Info to Telegram"
 git push origin main
 
 echo [Bot 4] Deploying...
